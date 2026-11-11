@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Confirmados da Heloísa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* Layout: painel de acompanhamento — resumo em números no topo, lista de convidados abaixo */
+:root{
+  --bg:#fdf6fb; --card:#ffffff; --line:#f1d3e6; --pink:#e8247f; --pink-soft:#ffe3f0;
+  --plum:#4b1877; --plum-soft:#efe4fa; --muted:#7d6390; --green:#1d9a52; --green-soft:#ddf5e6; --red:#c23a5a; --red-soft:#fde3ea;
+  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif; --f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--plum);font-family:var(--f-body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:22px 40px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px}
+h1{margin:0;font-family:var(--f-display);font-weight:800;font-size:30px;line-height:1.05;color:var(--pink)}
+.sub{margin:2px 0 0;color:var(--muted);font-weight:700}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:800;padding:9px 14px;border-radius:999px;background:var(--plum);color:#fff}
+.btn.soft{background:var(--plum-soft);color:var(--plum)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffc93c;outline-offset:2px}
+.btn[disabled]{opacity:.6;cursor:wait}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px}
+.stat b{display:block;font-family:var(--f-display);font-weight:800;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.stat.main{background:var(--pink);border-color:var(--pink);color:#fff}
+.stat.main span{color:#ffe3f0}
+
+.status{font-weight:700;color:var(--muted);font-size:13.5px;margin:0}
+.status.err{color:var(--red);background:var(--red-soft);padding:10px 12px;border-radius:12px}
+
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tools input,.tools select{font:inherit;font-weight:700;color:var(--plum);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.tools input{flex:1 1 200px;min-width:0}
+
+.list{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 16px;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.name{font-weight:800;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.when{color:var(--muted);font-size:12.5px;font-weight:700;text-align:right;white-space:nowrap}
+.meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:999px}
+.pill.yes{background:var(--green-soft);color:var(--green)}
+.pill.no{background:var(--red-soft);color:var(--red)}
+.pill.n{background:var(--plum-soft);color:var(--plum);font-variant-numeric:tabular-nums}
+.note{grid-column:1/-1;background:var(--pink-soft);border-radius:12px;padding:8px 12px;font-weight:700;font-style:italic;overflow-wrap:anywhere}
+.empty{padding:28px 18px;text-align:center;color:var(--muted);font-weight:700}
+.empty strong{display:block;font-family:var(--f-display);font-size:20px;color:var(--plum);margin-bottom:4px}
+
+.ops{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
+.mini{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--plum);font:inherit;font-size:13px;font-weight:800;padding:5px 12px;border-radius:999px;cursor:pointer}
+.mini.danger{border-color:var(--red-soft);color:var(--red)}
+.mini.danger.solid{background:var(--red);border-color:var(--red);color:#fff}
+.mini:focus-visible{outline:3px solid #ffc93c;outline-offset:2px}
+.mini[disabled]{opacity:.6;cursor:wait}
+.ask{font-size:13px;font-weight:800;color:var(--red)}
+@media (max-width:520px){.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head><body>
+<main class="wrap">
+  <header>
+    <div>
+      <h1>Confirmados da Heloísa</h1>
+      <p class="sub">1º aninho · sábado, 09/01/2027 às 17h30 · Salão Celebre</p>
+    </div>
+    <div class="actions">
+      <button class="btn soft" id="copy" type="button">Copiar lista</button>
+      <button class="btn" id="refresh" type="button">Atualizar</button>
+    </div>
+  </header>
+
+  <section class="stats" aria-label="Resumo">
+    <div class="stat main"><b id="s-total">–</b><span>pessoas vêm</span></div>
+    <div class="stat"><b id="s-ad">–</b><span>adultos</span></div>
+    <div class="stat"><b id="s-cr">–</b><span>crianças</span></div>
+    <div class="stat"><b id="s-no">–</b><span>não vão</span></div>
+  </section>
+
+  <p class="status" id="status">Carregando confirmações…</p>
+
+  <div class="tools">
+    <input id="busca" type="search" placeholder="Buscar pelo nome" aria-label="Buscar pelo nome">
+    <select id="filtro" aria-label="Filtrar respostas">
+      <option value="todos">Todas as respostas</option>
+      <option value="sim">Só quem vem</option>
+      <option value="nao">Só quem não vem</option>
+    </select>
+  </div>
+
+  <section class="list" id="list" aria-live="polite">
+    <div class="empty"><strong>Carregando…</strong>Buscando as confirmações.</div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var API="https://nkrtbhkopvbuhwqskryb.supabase.co/functions/v1/rsvp-heloisa";
+  var key=(location.hash.match(/k=([A-Za-z0-9_-]+)/)||[])[1]||"";
+  var rows=[], busy=false;
+  var $=function(id){return document.getElementById(id)};
+  function setStatus(t,err){var s=$("status");s.textContent=t;s.className="status"+(err?" err":"")}
+  function fmt(d){try{return new Date(String(d).replace(" ","T").replace(/\+00$/,"Z")).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"})}catch(_){return ""}}
+
+  function render(){
+    var vem=rows.filter(function(r){return r.vai});
+    var ad=vem.reduce(function(s,r){return s+(+r.adultos||0)},0);
+    var cr=vem.reduce(function(s,r){return s+(+r.criancas||0)},0);
+    $("s-total").textContent=ad+cr; $("s-ad").textContent=ad; $("s-cr").textContent=cr;
+    $("s-no").textContent=rows.length-vem.length;
+    var q=$("busca").value.trim().toLowerCase(), f=$("filtro").value;
+    var vis=rows.filter(function(r){
+      if(f==="sim"&&!r.vai) return false;
+      if(f==="nao"&&r.vai) return false;
+      return !q || String(r.nome).toLowerCase().indexOf(q)>=0;
+    });
+    var list=$("list"); list.textContent="";
+    if(!vis.length){
+      var e=document.createElement("div");e.className="empty";
+      var s=document.createElement("strong");s.textContent=rows.length?"Ninguém encontrado":"Nenhuma confirmação ainda";
+      e.appendChild(s);e.appendChild(document.createTextNode(rows.length?"Tente outro nome ou filtro.":"Quando alguém confirmar pelo convite, o nome aparece aqui."));
+      list.appendChild(e);return;
+    }
+    vis.forEach(function(r){
+      var it=document.createElement("div");it.className="item";
+      var n=document.createElement("div");n.className="name";n.textContent=r.nome;
+      var w=document.createElement("div");w.className="when";w.textContent=fmt(r.criado_em);
+      var m=document.createElement("div");m.className="meta";
+      function pill(cls,t){var p=document.createElement("span");p.className="pill "+cls;p.textContent=t;m.appendChild(p)}
+      if(r.vai){pill("yes","Vai ✓");pill("n",r.adultos+" adulto"+(r.adultos==1?"":"s"));pill("n",r.criancas+" criança"+(r.criancas==1?"":"s"))}
+      else pill("no","Não vai");
+      it.appendChild(n);it.appendChild(w);it.appendChild(m);
+      if(r.recado){var nt=document.createElement("div");nt.className="note";nt.textContent="“"+r.recado+"”";it.appendChild(nt)}
+      list.appendChild(it);
+    });
+  }
+
+  async function load(){
+    if(busy) return; busy=true; $("refresh").disabled=true;
+    try{
+      var res=await fetch(API+"?json=1&lista="+encodeURIComponent(key),{cache:"no-store"});
+      if(res.status===403){setStatus("Este link está incompleto. Peça o link completo da lista ao Ronaldo.",true);return}
+      if(!res.ok) throw new Error(res.status);
+      var j=await res.json();
+      rows=Array.isArray(j.rows)?j.rows:[];
+      render();
+      setStatus("Atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})+" · "+rows.length+" resposta"+(rows.length==1?"":"s")+" · atualiza sozinho a cada 30 segundos");
+    }catch(e){ setStatus("Não consegui carregar agora. Verifique a internet; vou tentar de novo em 30 segundos.",true) }
+    finally{ busy=false; $("refresh").disabled=false }
+  }
+
+  $("refresh").addEventListener("click",load);
+  $("busca").addEventListener("input",render);
+  $("filtro").addEventListener("change",render);
+  $("copy").addEventListener("click",function(){
+    var vem=rows.filter(function(r){return r.vai});
+    var t="Confirmados – 1º aninho da Heloísa\n\n"+vem.map(function(r,i){return (i+1)+". "+r.nome+" ("+r.adultos+" ad. / "+r.criancas+" cri.)"}).join("\n")
+      +"\n\nTotal: "+$("s-total").textContent+" pessoas ("+$("s-ad").textContent+" adultos, "+$("s-cr").textContent+" crianças)";
+    var btn=this;
+    try{navigator.clipboard.writeText(t).then(function(){btn.textContent="Copiada ✓";setTimeout(function(){btn.textContent="Copiar lista"},2000)},function(){btn.textContent="Não deu para copiar"})}catch(_){btn.textContent="Não deu para copiar"}
+  });
+  document.addEventListener("visibilitychange",function(){if(!document.hidden) load()});
+
+  if(!key){setStatus("Este link está incompleto. Peça o link completo da lista ao Ronaldo.",true);$("list").textContent="";return}
+  load();
+  setInterval(function(){if(!document.hidden) load()},30000);
+})();
+</script>
+</body></html>
